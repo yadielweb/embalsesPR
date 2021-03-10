@@ -1,224 +1,226 @@
 <!DOCTYPE html>
-<html>
-<head>
-	<title>Embalses de PR - Yadiel Torres</title>
+<!-- saved from url=(0051)https://stephsaephan.github.io/leaflet-map-example/ -->
+<html class="fa-events-icons-ready"><link type="text/css" rel="stylesheet" id="dark-mode-custom-link"><link type="text/css" rel="stylesheet" id="dark-mode-general-link"><style lang="en" type="text/css" id="dark-mode-custom-style"></style><style lang="en" type="text/css" id="dark-mode-native-style"></style><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style id="stndz-style"></style>
 
-	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />
-	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" 
-          integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="          
-          crossorigin=""/>
-	<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" 
-            integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="   
-            crossorigin=""></script>
-	<script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+    <title>Leaflet Example</title>
+
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Load Leaflet: http://leafletjs.com/ -->
+    <link rel="stylesheet" href="./LeafletExample_files/leaflet.css" integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ==" crossorigin="">
+    <script src="./LeafletExample_files/leaflet.js.download" integrity="sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log==" crossorigin=""></script>
+
+    <!-- Esri Leaflet Plugin: https://esri.github.io/esri-leaflet/ -->
+    <script src="./LeafletExample_files/esri-leaflet.js.download" integrity="sha512-pijLQd2FbV/7+Jwa86Mk3ACxnasfIMzJRrIlVQsuPKPCfUBCDMDUoLiBQRg7dAQY6D1rkmCcR8286hVTn/wlIg==" crossorigin=""></script>
+
+    <!-- ESRI Renderer Plugin: https://github.com/Esri/esri-leaflet-renderers -->
+    <!-- Renders feature layer using default symbology as defined by ArcGIS REST service -->
+    <!-- Currently doesn't work with ESRI cluster plugin -->
+    <script src="./LeafletExample_files/esri-leaflet-renderers.js.download" integrity="sha512-mhpdD3igvv7A/84hueuHzV0NIKFHmp2IvWnY5tIdtAHkHF36yySdstEVI11JZCmSY4TCvOkgEoW+zcV/rUfo0A==" crossorigin=""></script>
+
+    <!-- Load Leaflet Basemap Providers: https://github.com/leaflet-extras/leaflet-providers -->
+    <!-- Modified to include USGS TNM web services -->
+    <script src="./LeafletExample_files/leaflet-providers.js.download"></script>
+
+    <!-- 2.5D OSM Buildings Classic: https://github.com/kekscom/osmbuildings -->
+    <script src="./LeafletExample_files/OSMBuildings-Leaflet.js.download"></script>
+
+    <!-- Load Font Awesome icons -->
+    <script src="./LeafletExample_files/a64989e3a8.js.download"></script><link rel="stylesheet" href="./LeafletExample_files/a64989e3a8.css" media="all">
+
+    <!-- Grouped Layer Plugin: https://github.com/ismyrnow/leaflet-groupedlayercontrol  -->
+    <link rel="stylesheet" href="./LeafletExample_files/leaflet.groupedlayercontrol.min.css">
+    <script src="./LeafletExample_files/leaflet.groupedlayercontrol.min.js.download" type="text/javascript"></script>
+
+    <!-- Overview mini map Plugin: https://github.com/Norkart/Leaflet-MiniMap -->
+    <link rel="stylesheet" href="./LeafletExample_files/Control.MiniMap.css">
+    <script src="./LeafletExample_files/Control.MiniMap.min.js.download" type="text/javascript"></script>
+
+    <!-- Leaflet Drawing Plugin: https://github.com/codeofsumit/leaflet.pm -->
+    <link rel="stylesheet" href="./LeafletExample_files/leaflet.pm.css">
+    <script src="./LeafletExample_files/leaflet.pm.min.js.download"></script>
+
+    <!-- Leaflet WMS Plugin: https://github.com/heigeo/leaflet.wms -->
+    <script src="./LeafletExample_files/leaflet.wms.js.download"></script>
+
+    <!-- Logo Credit Plugin: https://github.com/gregallensworth/L.Control.Credits -->
+    <link rel="stylesheet" href="./LeafletExample_files/leaflet-control-credits.css">
+    <script type="text/javascript" src="./LeafletExample_files/leaflet-control-credits.js.download"></script>
+
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+        }
+
+        html,
+        body,
+        #map {
+            height: 100%;
+        }
+
+    </style>
+
 </head>
-<body>
-	<script>
-		let mymap; 
-let siteDict = {};
 
-///////////////////////////////////
-// Funcion para inicializar el mapa
-///////////////////////////////////
+<body class="">
 
-function inicializaMapa()
-{
-  let centro = [18.25178,-66.254513]; 
-  mymap = L.map('mapid').setView(centro, 9);
-  let atrib1 = 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">';
-  let atrib2 = 'OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>';
-  let atrib  = atrib1 + atrib2;
-  let mytoken = 'pk.eyJ1IjoibWVjb2JpIiwiYSI6IjU4YzVlOGQ2YjEzYjE3NTcxOTExZTI2OWY3Y2Y1ZGYxIn0.LUg7xQhGH2uf3zA57szCyw';
-  let myLayer = 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}';
-  L.tileLayer(myLayer, {
-        attribution: atrib,
-        maxZoom: 24,
-        id: 'mapbox/streets-v11',
-        tileSize: 512,
-        zoomOffset: -1,
-        accessToken: mytoken}).addTo(mymap);   
-}
+    <div id="map" class="leaflet-container leaflet-touch leaflet-fade-anim leaflet-grab leaflet-touch-drag leaflet-touch-zoom" tabindex="0" style="position: relative; outline: none;"><div class="leaflet-pane leaflet-map-pane" style="transform: translate3d(-325px, 268px, 0px);"><div class="leaflet-pane leaflet-tile-pane"><div class="leaflet-layer " style="z-index: 1; opacity: 1;"><div class="leaflet-tile-container leaflet-zoom-animated" style="z-index: 19; transform: translate3d(666px, -54px, 0px) scale(0.5);"></div><div class="leaflet-tile-container leaflet-zoom-animated" style="z-index: 20; transform: translate3d(434px, -33px, 0px) scale(1);"><img alt="" role="presentation" src="./LeafletExample_files/14704.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(413px, -13px, 0px); opacity: 1;"><img alt="" role="presentation" src="./LeafletExample_files/14703.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(413px, -269px, 0px); opacity: 1;"><img alt="" role="presentation" src="./LeafletExample_files/14704(1).png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(157px, -13px, 0px); opacity: 1;"><img alt="" role="presentation" src="./LeafletExample_files/14704(2).png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(669px, -13px, 0px); opacity: 1;"><img alt="" role="presentation" src="./LeafletExample_files/14705.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(413px, 243px, 0px); opacity: 1;"><img alt="" role="presentation" src="./LeafletExample_files/14703(1).png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(157px, -269px, 0px); opacity: 1;"><img alt="" role="presentation" src="./LeafletExample_files/14703(2).png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(669px, -269px, 0px); opacity: 1;"><img alt="" role="presentation" src="./LeafletExample_files/14705(1).png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(157px, 243px, 0px); opacity: 1;"><img alt="" role="presentation" src="./LeafletExample_files/14705(2).png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(669px, 243px, 0px); opacity: 1;"><img alt="" role="presentation" src="./LeafletExample_files/14704(3).png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(-99px, -13px, 0px); opacity: 1;"><img alt="" role="presentation" src="./LeafletExample_files/14704(4).png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(925px, -13px, 0px); opacity: 1;"><img alt="" role="presentation" src="./LeafletExample_files/14703(3).png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(-99px, -269px, 0px); opacity: 1;"><img alt="" role="presentation" src="./LeafletExample_files/14703(4).png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(925px, -269px, 0px); opacity: 1;"><img alt="" role="presentation" src="./LeafletExample_files/14705(3).png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(-99px, 243px, 0px); opacity: 1;"><img alt="" role="presentation" src="./LeafletExample_files/14705(4).png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(925px, 243px, 0px); opacity: 1;"><img alt="" role="presentation" src="./LeafletExample_files/14704(5).png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(-355px, -13px, 0px); opacity: 1;"><img alt="" role="presentation" src="./LeafletExample_files/14704(6).png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(1181px, -13px, 0px); opacity: 1;"><img alt="" role="presentation" src="./LeafletExample_files/14703(5).png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(-355px, -269px, 0px); opacity: 1;"><img alt="" role="presentation" src="./LeafletExample_files/14703(6).png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(1181px, -269px, 0px); opacity: 1;"><img alt="" role="presentation" src="./LeafletExample_files/14705(5).png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(-355px, 243px, 0px); opacity: 1;"><img alt="" role="presentation" src="./LeafletExample_files/14705(6).png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(1181px, 243px, 0px); opacity: 1;"></div></div></div><div class="leaflet-pane leaflet-shadow-pane"></div><div class="leaflet-pane leaflet-overlay-pane"></div><div class="leaflet-pane leaflet-marker-pane"></div><div class="leaflet-pane leaflet-tooltip-pane"></div><div class="leaflet-pane leaflet-popup-pane"></div><div class="leaflet-proxy leaflet-zoom-animated" style="transform: translate3d(2.66026e+06px, 3.76432e+06px, 0px) scale(16384);"></div></div><div class="leaflet-control-container"><div class="leaflet-top leaflet-left"><div class="leaflet-control-zoom leaflet-bar leaflet-control"><a class="leaflet-control-zoom-in" href="https://stephsaephan.github.io/leaflet-map-example/#" title="Zoom in" role="button" aria-label="Zoom in">+</a><a class="leaflet-control-zoom-out" href="https://stephsaephan.github.io/leaflet-map-example/#" title="Zoom out" role="button" aria-label="Zoom out">−</a></div><div class="leaflet-pm-toolbar leaflet-pm-draw leaflet-bar leaflet-control"><div class="button-container"><a class="leaflet-buttons-control-button"><div class="control-icon leaflet-pm-icon-marker" title="Draw Marker"></div></a><div class="leaflet-pm-actions-container"><a class="leaflet-pm-action action-cancel">Cancel</a></div></div><div class="button-container"><a class="leaflet-buttons-control-button"><div class="control-icon leaflet-pm-icon-polyline" title="Draw Polyline"></div></a><div class="leaflet-pm-actions-container"><a class="leaflet-pm-action action-finish">Finish</a><a class="leaflet-pm-action action-removeLastVertex">Remove Last Vertex</a><a class="leaflet-pm-action action-cancel">Cancel</a></div></div><div class="button-container"><a class="leaflet-buttons-control-button"><div class="control-icon leaflet-pm-icon-rectangle" title="Draw Rectangle"></div></a><div class="leaflet-pm-actions-container"><a class="leaflet-pm-action action-cancel">Cancel</a></div></div><div class="button-container"><a class="leaflet-buttons-control-button"><div class="control-icon leaflet-pm-icon-polygon" title="Draw Polygons"></div></a><div class="leaflet-pm-actions-container"><a class="leaflet-pm-action action-finish">Finish</a><a class="leaflet-pm-action action-removeLastVertex">Remove Last Vertex</a><a class="leaflet-pm-action action-cancel">Cancel</a></div></div><div class="button-container"><a class="leaflet-buttons-control-button"><div class="control-icon leaflet-pm-icon-circle" title="Draw Circle"></div></a><div class="leaflet-pm-actions-container"><a class="leaflet-pm-action action-cancel">Cancel</a></div></div><div class="button-container"><a class="leaflet-buttons-control-button"><div class="control-icon leaflet-pm-icon-circle-marker" title="Draw Circle Marker"></div></a><div class="leaflet-pm-actions-container"><a class="leaflet-pm-action action-cancel">Cancel</a></div></div></div><div class="leaflet-pm-toolbar leaflet-pm-edit leaflet-bar leaflet-control"><div class="button-container"><a class="leaflet-buttons-control-button"><div class="control-icon leaflet-pm-icon-edit" title="Edit Layers"></div></a><div class="leaflet-pm-actions-container"><a class="leaflet-pm-action action-cancel">Cancel</a></div></div><div class="button-container"><a class="leaflet-buttons-control-button"><div class="control-icon leaflet-pm-icon-drag" title="Drag Layers"></div></a><div class="leaflet-pm-actions-container"><a class="leaflet-pm-action action-cancel">Cancel</a></div></div><div class="button-container"><a class="leaflet-buttons-control-button"><div class="control-icon leaflet-pm-icon-cut" title="Cut Layers"></div></a><div class="leaflet-pm-actions-container"><a class="leaflet-pm-action action-finish">Finish</a><a class="leaflet-pm-action action-removeLastVertex">Remove Last Vertex</a><a class="leaflet-pm-action action-cancel">Cancel</a></div></div><div class="button-container"><a class="leaflet-buttons-control-button"><div class="control-icon leaflet-pm-icon-delete" title="Remove Layers"></div></a><div class="leaflet-pm-actions-container"><a class="leaflet-pm-action action-cancel">Cancel</a></div></div></div></div><div class="leaflet-top leaflet-right"><div class="leaflet-control-layers leaflet-control" aria-haspopup="true"><a class="leaflet-control-layers-toggle" href="https://stephsaephan.github.io/leaflet-map-example/#" title="Layers"></a><form class="leaflet-control-layers-list"><div class="leaflet-control-layers-base"><label><input type="radio" class="leaflet-control-layers-selector" name="leaflet-base-layers" checked="checked"><span> Stamen Toner</span></label><label><input type="radio" class="leaflet-control-layers-selector" name="leaflet-base-layers"><span> USGS TNM</span></label><label><input type="radio" class="leaflet-control-layers-selector" name="leaflet-base-layers"><span> ESRI Imagery</span></label><label><input type="radio" class="leaflet-control-layers-selector" name="leaflet-base-layers"><span> ESRI Ocean Basemap</span></label><label><input type="radio" class="leaflet-control-layers-selector" name="leaflet-base-layers"><span> OSM Topo</span></label></div><div class="leaflet-control-layers-separator"></div><div class="leaflet-control-layers-overlays"><div class="leaflet-control-layers-group" id="leaflet-control-layers-group-1"><label class="leaflet-control-layers-group-label"><span class="leaflet-control-layers-group-name">Hawaii State GIS</span></label><label><input type="checkbox" class="leaflet-control-layers-selector"><span> Water Quality Monitoring Sites</span></label><label><input type="checkbox" class="leaflet-control-layers-selector"><span> Na Ala Hele Trails</span></label><label><input type="checkbox" class="leaflet-control-layers-selector"><span> Agricultural Baseline</span></label></div><div class="leaflet-control-layers-group" id="leaflet-control-layers-group-2"><label class="leaflet-control-layers-group-label"><span class="leaflet-control-layers-group-name">PacIOOS Layers</span></label><label><input type="checkbox" class="leaflet-control-layers-selector"><span> Economic Loss from Sea Level Rise (0.5ft) </span></label><label><input type="checkbox" class="leaflet-control-layers-selector"><span> CRED REA Sites</span></label><label><input type="checkbox" class="leaflet-control-layers-selector"><span> Vegetation Shoreline</span></label></div><div class="leaflet-control-layers-group" id="leaflet-control-layers-group-3"><label class="leaflet-control-layers-group-label"><span class="leaflet-control-layers-group-name">OSM Bldg Classic</span></label><label><input type="checkbox" class="leaflet-control-layers-selector"><span> 2.5D Buildings</span></label></div></div></form></div></div></div></div>
 
-////////////////////////////////////////////////////////////////////
-// Funcion la cual crea un diccionario con los datos de los embalses
-////////////////////////////////////////////////////////////////////
+    <script>
+        var map = L.map('map', {
+            center: [21.3069, -157.8583], // Honolulu, HI
+            zoom: 16
+        });
 
-function createDictionary()
-{
-  let url ="https://raw.githubusercontent.com/mecobi/archivos_ejemplo/main/embalses.csv";
-  
-  Plotly.d3.csv(url,function(data){
-    for(let i=0;i < data.length;i++)
-    {
-      siteDict[data[i].siteID] = {nombre:data[i].nombre,
-                                  lat:data[i].latitude,
-                                  lon:data[i].longitude,
-                                  desborde:data[i].desborde,
-                                  seguridad:data[i].seguridad,
-                                  observacion:data[i].observacion,
-                                  ajuste:data[i].ajuste,
-                                  control:data[i].control};
-    }
-  });
-}
+        var defaultBase = L.tileLayer.provider('Stamen.TonerLite').addTo(map);
 
-//////////////////////////////////////////////////////////////////////////
-// Funcion para filtrar la fecha y nivel de los embalses en el diccionario
-//////////////////////////////////////////////////////////////////////////
+        var baseLayers = {
+            'Stamen Toner': defaultBase,
+            'USGS TNM': L.tileLayer.provider('USGSTNM'),
+            'ESRI Imagery': L.tileLayer.provider('Esri.WorldImagery'),
+            'ESRI Ocean Basemap': L.tileLayer.provider('Esri.OceanBasemap'),
+            'OSM Topo': L.tileLayer.provider('OpenTopoMap')
+        };
 
-function filtraDatos(data)
-{
-  let fecha = [],
-      nivel = [];
-  
-  const filtered = data.split('\n');
-  let colNivel;
-  
-  for(let i=0;i < filtered.length;i++)
-  {
-    if (filtered[i].slice(0,9) == "agency_cd")
-    {
-      let header = filtered[i].split("\t");
-      colNivel = header.findIndex(element => element.includes("_62616"))
-    }
-    
-    if(filtered[i].slice(0,4) == "USGS")
-    {
-      let fila = filtered[i].split('\t');
-      fecha.push(fila[2]);
-      nivel.push(parseFloat(fila[colNivel]));
-    }
-  }
-  return [fecha,nivel];
-}
+        //ESRI ArcGIS layers from Hawaii GIS Program; dynamic layer example
+        //Using a relative url to call layer instead of http
+        var WaterQualSites = L.esri.dynamicMapLayer({
+            url: '//geodata.hawaii.gov/arcgis/rest/services/HumanHealthSafety/MapServer',
+            layers: [2],
+            useCors: false
+        });
 
-////////////////////////////////////////////////////////
-// Funcion que devuelve la normalizacion de los embalses
-////////////////////////////////////////////////////////
+        //add popup to Water quality sites dynamic map layer
+        WaterQualSites.bindPopup(function(error, featureCollection) {
+            if (error || featureCollection.features.length === 0) {
+                return false;
+            } else {
+                return 'Name: ' + featureCollection.features[0].properties.name + '<br>' + 'ID: ' + featureCollection.features[0].properties.identifier;
+            }
+        });
 
-function normalizacion(nivel, control, desborde)
-{
-  let num = nivel - control,
-      denominado = desborde - control,
-      normalizacion = (num/denominado);
-  return normalizacion;
-}
+        //ESRI ArcGIS layers from Hawaii GIS Program; polygon feature layer example
+        //Using a relative url to call layer instead of http
+        var AgBaseline = L.esri.featureLayer({
+            url: '//geodata.hawaii.gov/arcgis/rest/services/LandUseLandCover/MapServer/4',
+            style: function(feature) {
+                return {
+                    fillOpacity: 0.5
+                }
+            }
+        });
 
-//////////////////////////////////////////////////////////
-// Funcion que devuelve el nivel pendiente de los embalses
-//////////////////////////////////////////////////////////
+        //add popup to AgBaseline feature layer
+        AgBaseline.bindPopup(function(evt) {
+            return L.Util.template('<p>{cropcatego}<br>{island}</p>', evt.feature.properties);
+        });
 
-function tendencia(fecha, nivel)
-{
-  let now = Date().slice(8,10),
-      tendencia =[];
-  
-  for(let i=0;i < nivel.length;i++)
-  {
-    if (fecha[i].slice(8,10) == now)
-    {
-      tendencia.push(parseFloat(nivel[i]));
-    }
-  }
-  let pendiente = tendencia[tendencia.length -1] - tendencia[0];
-  return pendiente; 
-}
+        //ESRI ArcGIS layers from Hawaii GIS Program; line feature layer example; can override the styling
+        //Using a relative url to call layer
+        var Trails = L.esri.featureLayer({
+            url: '//geodata.hawaii.gov/arcgis/rest/services/Terrestrial/MapServer/34',
+            style: function(feature) {
+                return {
+                    color: '#328000',
+                    weight: 2
+                }
+            }
+        });
 
-////////////////////////////////////////////////
-// Funcion que crea marcadores para cada embalse
-////////////////////////////////////////////////
+        //PacIOOS GeoServer Example; adding a single layer with properties
+        //Using a relative url to call layer instead of http
+        var EconSeaLevRise = L.tileLayer.wms('http://geo.pacioos.hawaii.edu/geoserver/wms?', {
+            layers: 'PACIOOS:hi_tt_all_slrxa_econ_2030',
+            format: 'image/png',
+            opacity: 0.5,
+            tiled: 'true'
+        });
 
-function createMarker(miEmbalse)
-{
-  Plotly.d3.text("https://waterdata.usgs.gov/pr/nwis/uv/?format=rdb&site_no=" + miEmbalse, function(data){
-    let datos = filtraDatos(data),
-        lat = siteDict[miEmbalse].lat,
-        lon = siteDict[miEmbalse].lon,
-        nombre = siteDict[miEmbalse].nombre,
-        desborde = parseFloat(siteDict[miEmbalse].desborde),
-        seguridad = parseFloat(siteDict[miEmbalse].seguridad),
-        observacion = parseFloat(siteDict[miEmbalse].observacion),
-        ajuste = parseFloat(siteDict[miEmbalse].ajuste),
-        control = parseFloat(siteDict[miEmbalse].control),
-        nivel = datos[1].pop(),
-        nivel_pend = datos[1], 
-        fecha = datos[0],
-        norm = normalizacion(nivel,control,desborde),
-        pendiente = tendencia(fecha, nivel_pend),
-        mensaje = "Sup..soy " + nombre + " <br> Mi nivel es " + parseFloat(nivel).toFixed(2) + " metros",
-        nivel_2 = 0.09 - (norm/09).toFixed(2),
-        largo = 0.04,
-        rect1, rect2, rect3, rect4, rect5,
-        icono, marcadorIcono, marcadorTend;
-    
-    if (nivel_2.toFixed(2) == 0.00){largo = 0.00;}
-    rect5 = L.rectangle([[lat,lon], [lat-nivel_2.toFixed(2),lon-largo]],
-                             {color: 'black',
-                              colorOpacity:1,
-                              fillColor:'black',
-                              fillOpacity:1}).addTo(mymap);
-    
-    if (nivel >= seguridad)
-    {
-      rect1 = L.rectangle([[lat,lon], [lat-0.09,lon-0.04]],
-                             {color: 'black',
-                              colorOpacity:1,
-                              fillColor:'green',
-                              fillOpacity:1}).addTo(mymap);
-    }
-    else if (nivel >= observacion && nivel < seguridad)
-    {
-      rect2 = L.rectangle([[lat,lon], [lat-0.09,lon-0.04]],
-                             {color: 'black',
-                              colorOpacity:1,
-                              fillColor:'blue',
-                              fillOpacity:1}).addTo(mymap);
-    }
-    else if (nivel >= ajuste && nivel < observacion)
-    {
-      rect3 = L.rectangle([[lat,lon], [lat-0.09,lon-0.04]],
-                             {color: 'black',
-                              colorOpacity:1,
-                              fillColor:'yellow',
-                              fillOpacity:1}).addTo(mymap);
-    }
-    else if (nivel <= control)
-    {
-      rect4 = L.rectangle([[lat,lon], [lat-0.09,lon-0.04]],
-                             {color: 'black',
-                              colorOpacity:1,
-                              fillColor:'darkorange',
-                              fillOpacity:1}).addTo(mymap);
-    }
-    rect5.bindPopup(mensaje).openPopup();
-    
-    if(pendiente > 0)
-    {icono= 'https://cdn0.iconfinder.com/data/icons/flat-round-arrow-arrow-head/512/Green_Arrow_Top-512.png?raw=true';}
-    else if(pendiente == 0)
-    {icono= 'https://cdn0.iconfinder.com/data/icons/ui-essence/32/_26ui-512.png?raw=true';}
-    else if(pendiente < 0)
-    {icono= 'https://cdn0.iconfinder.com/data/icons/flat-round-arrow-arrow-head/512/Red_Arrow_Down-512.png?raw=true';}
-    
-    marcadorIcono = L.icon({iconUrl: icono, iconSize: [25,25], iconAnchor: [23.5,35]});
-    marcadorTend = L.marker([lat,lon], {icon: marcadorIcono}).addTo(mymap);
-  });
-}
+        //Another example using PacIOOS GeoServer examples; setting properties first then add layers     
+        var options = {
+            transparent: 'true',
+            format: 'image/png',
+            opacity: 0.5,
+            tiled: 'true'
+            //info_format: 'text/html'
+        };
 
-//////////////////////////////
-// Funcion que imprime el mapa
-//////////////////////////////
+        //Using a relative url to call layer instead of http
+        var source = L.WMS.source('http://geo.pacioos.hawaii.edu/geoserver/wms?', options);
+        var CREDREASites = source.getLayer('PACIOOS:hi_cred_all_rea_sites');
+        var VegShoreline = source.getLayer('PACIOOS:hi_hcgg_all_shore_veg');
 
-function procesaEmbalse(){
-  for(const [key,value] of Object.entries(siteDict))
-  {
-    createMarker(key);
-  }
-}
+        //Load OSM Buildings then disable it on first load; can only be viewed at certain scales
+        var osmb = new OSMBuildings(map).load();
+        map.removeLayer(osmb);
 
-createDictionary();
-inicializaMapa();
-setTimeout(procesaEmbalse,500);
-</script>
-</html>
+        //Overlay grouped layers    
+        var groupOverLays = {
+            "Hawaii State GIS": {
+                "Water Quality Monitoring Sites": WaterQualSites,
+                "Na Ala Hele Trails": Trails,
+                "Agricultural Baseline": AgBaseline
+            },
+
+            "PacIOOS Layers": {
+                "Economic Loss from Sea Level Rise (0.5ft) ": EconSeaLevRise,
+                "CRED REA Sites": CREDREASites,
+                "Vegetation Shoreline": VegShoreline
+            },
+
+            "OSM Bldg Classic": {
+                "2.5D Buildings": osmb
+            }
+        };
+
+        //add layer switch control
+        L.control.groupedLayers(baseLayers, groupOverLays).addTo(map);
+
+
+        //add scale bar to map
+        L.control.scale({
+            position: 'bottomleft'
+        }).addTo(map);
+
+        // Overview mini map
+        var Esri_WorldTopoMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
+            attribution: '&copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community'
+        });
+
+        var miniMap = new L.Control.MiniMap(Esri_WorldTopoMap, {
+            toggleDisplay: true,
+            minimized: false,
+            position: 'bottomleft'
+        }).addTo(map);
+
+        //define Drawing toolbar options
+        var options = {
+            position: 'topleft', // toolbar position, options are 'topleft', 'topright', 'bottomleft', 'bottomright'
+            drawMarker: true, // adds button to draw markers
+            drawPolyline: true, // adds button to draw a polyline
+            drawRectangle: true, // adds button to draw a rectangle
+            drawPolygon: true, // adds button to draw a polygon
+            drawCircle: true, // adds button to draw a cricle
+            cutPolygon: true, // adds button to cut a hole in a polygon
+            editMode: true, // adds button to toggle edit mode for all layers
+            removalMode: true, // adds a button to remove layers
+        };
+
+        // add leaflet.pm controls to the map
+        map.pm.addControls(options);
+
+        //Logo position: bottomright
+        var credctrl = L.controlCredits({
+            image: "Images/opengislab_106x23.png",
+            link: "https://www.opengislab.com/",
+            text: "Leaflet map example by Stephanie @ <u>opengislab.com<u/>"
+        }).addTo(map);
+
+    </script>
+
+
+
+
+</body></html>
