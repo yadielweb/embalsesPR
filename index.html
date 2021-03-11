@@ -35,12 +35,17 @@
     <div id="mapid" style="width: 800px; height:600px;"></div>
     <div>
         <script>
-            let mymap; 
-            let siteDict = {};
-            let fecha = Date(),
-                dia = fecha.slice(0,3),
-                mes = fecha.slice(4,7),
-                hora = fecha.slice(16,18),
+        /////////////////////
+        // Variables globales
+        /////////////////////
+
+            let mymap,
+                url = "https://waterdata.usgs.gov/pr/nwis/uv/?format=rdb&site_no=",
+                siteDict = {},
+                fecha1 = Date(),
+                dia = fecha1.slice(0,3),
+                mes = fecha1.slice(4,7),
+                hora = fecha1.slice(16,18),
                 nameDia = { "Mon":"Lunes", "Tue":"Martes", "Wed":"Miércoles",
                              "Thu":"Jueves", "Fri":"Viernes", "Sat":"Sábado",
                              "Sun":"Domingo"},
@@ -50,7 +55,18 @@
                              "Oct":"Octubre", "Nov":"Noviembre", "Dic":"Diciembre"},
                 horas = { "13":"1", "14":"2", "15":"3", "16":"4",
                            "17":"5", "18":"6", "19":"7", "20":"8",
-                           "21":"9", "22":"10", "23":"11", "24":"12"};
+                           "21":"9", "22":"10", "23":"11", "24":"12"},
+                numero_rios = [50059000,
+                               50045000,
+                               50076800,
+                               50047550,
+                               50093045,
+                               50111210,
+                               50039995,
+                               50026140,
+                               50071225,
+                               50010800,
+                               50113950];
 
         ///////////////////////////////////
         // Funcion para inicializar el mapa
@@ -58,57 +74,65 @@
 
             function inicializaMapa()
             {
-              let centro = [18.25178,-66.254513]; 
-              mymap = L.map('mapid').setView(centro, 9);
-              let atrib1 = 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">';
-              let atrib2 = 'OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>';
-              let atrib  = atrib1 + atrib2;
-              let mytoken = 'pk.eyJ1IjoibWVjb2JpIiwiYSI6IjU4YzVlOGQ2YjEzYjE3NTcxOTExZTI2OWY3Y2Y1ZGYxIn0.LUg7xQhGH2uf3zA57szCyw';
-              let myLayer = 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}';
-              L.tileLayer(myLayer, {
+                let centro = [18.25178,-66.254513];
+                mymap = L.map('mapid').setView(centro, 9);
+                let atrib1 = 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">';
+                let atrib2 = 'OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>';let atrib  = atrib1 + atrib2;
+                let mytoken = 'pk.eyJ1IjoibWVjb2JpIiwiYSI6IjU4YzVlOGQ2YjEzYjE3NTcxOTExZTI2OWY3Y2Y1ZGYxIn0.LUg7xQhGH2uf3zA57szCyw';
+                let myLayer = 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}';
+                L.tileLayer(myLayer, {
                     attribution: atrib,
                     maxZoom: 24,
                     id: 'mapbox/streets-v11',
                     tileSize: 512,
                     zoomOffset: -1,
                     accessToken: mytoken}).addTo(mymap);
+            }
   
-        /////////////
-        // Leyenda //
-        /////////////
-
-                var leyenda = L.control({position: 'bottomleft'}),
-                    actualizacion = L.control({position: 'bottomright'});
-
+        //////////
+        // Leyenda 
+        //////////
+            
+            function leyendamostrar()
+            {
+                var leyenda = L.control({position: 'bottomleft'});
                 leyenda.onAdd = function (mymap)
                 {
                     var div = L.DomUtil.create('div', 'info leyenda'),
                         niveles = ['Seguridad', 'Ajuste', 'Control', 'Observacion'],
                         colores = ['green', 'blue', 'yellow', 'darkorange'];
-                    
+
                     div.innerHTML += "<h4>Nivel</h4>";
                     for(let i=0; i < 4; i++)
                     {
-                      div.innerHTML += '<i style="background:'+colores[i]+'"></i><span>'+niveles[i]+'</span><br>';
+                        div.innerHTML += '<i style="background:'+colores[i]+'"></i><span>'+niveles[i]+'</span><br>';
                     }
                     return div;
                 };
+                leyenda.addTo(mymap);
+            }
 
+        ///////////////////////////////
+        // Funcion que muestra la fecha
+        ///////////////////////////////
+  
+            function actualizar()
+            {
+                var actualizacion = L.control({position: 'bottomright'});
                 actualizacion.onAdd = function(mymap)
                 {
                     var div2 = L.DomUtil.create('div', 'actualizacion');
-                    
-                    if (fecha.slice(16,18) < 12)
+
+                    if (fecha1.slice(16,18) >= 12)
                     {
-                      div2.innerHTML += "<h4>Última actualización: "+(nameDia[dia]+" "+fecha.slice(8,10)+" de "+nameMes[mes]+" del "+fecha.slice(11,15)+" "+horas[hora]+fecha.slice(18,24)+" AM")+"</h4>";
+                        div2.innerHTML += "<h4>Última actualización: "+(nameDia[dia]+" "+fecha1.slice(8,10)+" de "+nameMes[mes]+" del "+fecha1.slice(11,15)+" "+horas[hora]+fecha1.slice(18,24)+" PM")+"</h4>";
                     }
                     else
                     {
-                      div2.innerHTML += "<h4>Última actualización: "+(nameDia[dia]+" "+fecha.slice(8,10)+" de "+nameMes[mes]+" del "+fecha.slice(11,15)+" "+horas[hora]+fecha.slice(18,24)+" PM")+"</h4>"; 
+                        div2.innerHTML += "<h4>Última actualización: "+(nameDia[dia]+" "+fecha1.slice(8,10)+" de "+nameMes[mes]+" del "+fecha1.slice(11,15)+" "+horas[hora]+fecha1.slice(18,24)+" AM")+"</h4>"; 
                     }
                     return div2;
                 };
-                leyenda.addTo(mymap);
                 actualizacion.addTo(mymap);
             }
 
@@ -311,6 +335,8 @@
 
             createDictionary();
             inicializaMapa();
+            leyendamostrar();
+            actualizar();
             setTimeout(procesaEmbalse,500);
         </script>
     </div>
