@@ -18,9 +18,60 @@
 <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
 </head>
 <body>
-    <h1>Hello World My Name is Yadiel</h1>
-    <p>I'm hosted with GitHub Pages.</p>
+    <h1>embalsesPR.V2 by Yadiel</h1>
     <div id="mapid" style="width: 800px; height:600px;"></div>
+    <div class="col-sm-4">
+        <form class="well">
+          <p align="justify"><font color="Maroon">embalsesPR</font> es una aplicación para <font color="blue">buscar</font> y 
+            <font color="blue">visualizar</font> el estado actual de 
+            los embalses en Puerto Rico utilizando datos del Servicio Geológico de los Estados Unidos 
+            (USGS por sus siglas en inglés). Dependiendo del tráfico en el servidor (y los 
+            instrumentos del USGS) el tiempo de búsqueda puede variar. Según USGS los datos 
+            tienen estado provisional y podrian variar luego de una revisión. De ser necesario 
+            recarge la página.</p>
+          <button id="buscaDatos" type="button" class="btn btn-default action-button shiny-bound-input">
+            <i class="fa fa-search"></i>
+            Buscar datos..
+          </button>
+          <br>
+          <div data-display-if="input.buscaDatos == true" data-ns-prefix="" style="display: none;"><p align="justify"> </p><ul style="padding-left:20px;text-align:justify;"> <li>La <font color="blue"> <b>altura </b> </font> 
+             de los rectángulos de color es proporcional al <font color="blue"><b>nivel del embalse</b></font> 
+             y la flecha indica la   <font color="blue"><b>tendencia del nivel </b></font> en 
+             las últimas horas</li> <li><font color="blue"><b>Oprima</b></font>  en los rectángulos para obtener mas información y una gráfica 
+             del nivel en las pasadas horas.</li> 
+             <li>El código de colores, y los niveles de alerta están 
+              basadas en información oficial provista en  <font color="blue">http://acueductospr.com.</font> 
+              </li></ul> <p></p></div>
+          <div class="form-group shiny-input-container">
+            <div class="checkbox">
+              <label>
+                <input id="rectangulo" type="checkbox" checked="checked" class="shiny-bound-input">
+                <span>Mostrar gráfica de estado actual</span>
+              </label>
+            </div>
+          </div>
+          <div class="form-group shiny-input-container">
+            <div class="checkbox">
+              <label>
+                <input id="nombre" type="checkbox" checked="checked" class="shiny-bound-input">
+                <span>Mostrar nombres de los embalses</span>
+              </label>
+            </div>
+          </div>
+          <p align="justify"> <font color="Maroon">embalsesPR</font> es un proyecto del grupo 
+           <font color="blue">CienciaDatosPR</font> del <font color="blue">Departamento de 
+           Matemáticas</font> de la <font color="Maroon"> Universidad de Puerto Rico en Humacao
+           </font>.  
+           Pueden enviar sus preguntas, comentarios, o sugerencias 
+           a: <a href="mailto:elio.ramos@upr.edu">elio.ramos@upr.edu</a></p>
+          <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">
+            <img alt="Licencia Creative Commons" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/80x15.png"></a><br>
+            <span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">EmbalsesPR
+            </span> por <a xmlns:cc="http://creativecommons.org/ns#" href="mate.uprh.edu" property="cc:attributionName" rel="cc:attributionURL">CienciaDatosPR/
+            Matemáticas/UPR-Humacao</a> se distribuye bajo una <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Licencia Creative 
+            Commons Atribución-NoComercial-CompartirIgual 4.0 Internacional</a>.
+        </form>
+      </div>
 <script>
     let mymap; 
     let siteDict = {};
