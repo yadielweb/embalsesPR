@@ -37,6 +37,20 @@
         <script>
             let mymap; 
             let siteDict = {};
+            let fecha = Date(),
+                dia = fecha.slice(0,3),
+                mes = fecha.slice(4,7),
+                hora = fecha.slice(16,18),
+                nameDia = { "Mon":"Lunes", "Tue":"Martes", "Wed":"Miércoles",
+                             "Thu":"Jueves", "Fri":"Viernes", "Sat":"Sábado",
+                             "Sun":"Domingo"},
+                nameMes = { "Jan":"Enero", "Feb":"Febrero", "Mar":"Marzo",
+                             "Apr":"Abril", "May":"Mayo", "Jun":"Junio",
+                             "Jul":"Julio", "Aug":"Agosto", "Sep":"Septiembre",
+                             "Oct":"Octubre", "Nov":"Noviembre", "Dic":"Diciembre"},
+                horas = { "13":"1", "14":"2", "15":"3", "16":"4",
+                           "17":"5", "18":"6", "19":"7", "20":"8",
+                           "21":"9", "22":"10", "23":"11", "24":"12"};
 
         ///////////////////////////////////
         // Funcion para inicializar el mapa
@@ -328,7 +342,7 @@ float: left;
 margin: 0 8px 0 0;
 opacity: 0.75;
 }
-/*.actualizacion {
+.actualizacion {
   padding: 6px 8px;
   font: 14px Arial, Helvetica, sans-serif;
   background: black;
@@ -337,7 +351,7 @@ opacity: 0.75;
   border-radius: 5px;
   line-height: 24px;
   color: #555;
-}*/
+}
 .actualizacion h4 {
   text-align: center;
   font-size: 18px;
