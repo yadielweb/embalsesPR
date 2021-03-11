@@ -1,7 +1,271 @@
 <!DOCTYPE html>
 <html>
+<head>
+<title>Quick Start - Leaflet</title>
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" 
+      integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="          
+      crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" 
+        integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="   
+        crossorigin=""></script>
+
+<script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+</head>
 <body>
-<h1>Hello World My Name is Yadiel</h1>
-<p>I'm hosted with GitHub Pages.</p>
+    <h1>Hello World My Name is Yadiel</h1>
+    <p>I'm hosted with GitHub Pages.</p>
+    <div id="mapid" style="width: 800px; height:600px;"></div>
+<script>
+    let mymap; 
+    let siteDict = {};
+
+    ///////////////////////////////////
+    // Funcion para inicializar el mapa
+    ///////////////////////////////////
+
+    function inicializaMapa()
+    {
+    let centro = [18.25178,-66.254513]; 
+    mymap = L.map('mapid').setView(centro, 9);
+    let atrib1 = 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">';
+    let atrib2 = 'OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>';
+    let atrib  = atrib1 + atrib2;
+    let mytoken = 'pk.eyJ1IjoibWVjb2JpIiwiYSI6IjU4YzVlOGQ2YjEzYjE3NTcxOTExZTI2OWY3Y2Y1ZGYxIn0.LUg7xQhGH2uf3zA57szCyw';
+    let myLayer = 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}';
+    L.tileLayer(myLayer, {
+        attribution: atrib,
+        maxZoom: 24,
+        id: 'mapbox/streets-v11',
+        tileSize: 512,
+        zoomOffset: -1,
+        accessToken: mytoken}).addTo(mymap);
+
+    /////////////
+    // Leyenda //
+    /////////////
+
+    var leyenda = L.control({position: 'bottomleft'});
+    leyenda.onAdd = function (mymap)
+    {
+    var div = L.DomUtil.create('div', 'info leyenda'),
+        niveles = ['Seguridad', 'Ajuste', 'Control', 'Observacion'],
+        colores = ['green', 'blue', 'yellow', 'darkorange'];
+
+    div.innerHTML += "<h4>Nivel</h4>";
+    for(let i=0; i < 4; i++)
+    {
+      div.innerHTML += '<i style="background:'+colores[i]+'"></i><span>'+niveles[i]+'</span><br>';
+    }
+    return div;
+    };
+    leyenda.addTo(mymap);
+    }
+
+    ////////////////////////////////////////////////////////////////////
+    // Funcion la cual crea un diccionario con los datos de los embalses
+    ////////////////////////////////////////////////////////////////////
+
+    function createDictionary()
+    {
+    let url ="https://raw.githubusercontent.com/mecobi/archivos_ejemplo/main/embalses.csv";
+
+    Plotly.d3.csv(url,function(data){
+    for(let i=0;i < data.length;i++)
+    {
+      siteDict[data[i].siteID] = {nombre:data[i].nombre,
+                                  lat:data[i].latitude,
+                                  lon:data[i].longitude,
+                                  desborde:data[i].desborde,
+                                  seguridad:data[i].seguridad,
+                                  observacion:data[i].observacion,
+                                  ajuste:data[i].ajuste,
+                                  control:data[i].control};
+    }
+    });
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+    // Funcion para filtrar la fecha y nivel de los embalses en el diccionario
+    //////////////////////////////////////////////////////////////////////////
+
+    function filtraDatos(data)
+    {
+    let fecha = [],
+      nivel = [];
+
+    const filtered = data.split('\n');
+    let colNivel;
+
+    for(let i=0;i < filtered.length;i++)
+    {
+    if (filtered[i].slice(0,9) == "agency_cd")
+    {
+      let header = filtered[i].split("\t");
+      colNivel = header.findIndex(element => element.includes("_62616"))
+    }
+
+    if(filtered[i].slice(0,4) == "USGS")
+    {
+      let fila = filtered[i].split('\t');
+      fecha.push(fila[2]);
+      nivel.push(parseFloat(fila[colNivel]));
+    }
+    }
+    return [fecha,nivel];
+    }
+
+    ////////////////////////////////////////////////////////
+    // Funcion que devuelve la normalizacion de los embalses
+    ////////////////////////////////////////////////////////
+
+    function normalizacion(nivel, control, desborde)
+    {
+    let num = nivel - control,
+      denominado = desborde - control,
+      normalizacion = (num/denominado);
+    return normalizacion;
+    }
+
+    //////////////////////////////////////////////////////////
+    // Funcion que devuelve el nivel pendiente de los embalses
+    //////////////////////////////////////////////////////////
+
+    function tendencia(fecha, nivel)
+    {
+    let now = Date().slice(8,10),
+      tendencia =[];
+
+    for(let i=0;i < nivel.length;i++)
+    {
+    if (fecha[i].slice(8,10) == now)
+    {
+      tendencia.push(parseFloat(nivel[i]));
+    }
+    }
+    let pendiente = tendencia[tendencia.length -1] - tendencia[0];
+    return pendiente; 
+    }
+
+    ////////////////////////////////////////////////
+    // Funcion que crea marcadores para cada embalse
+    ////////////////////////////////////////////////
+
+    function createMarker(miEmbalse)
+    {
+    Plotly.d3.text("https://waterdata.usgs.gov/pr/nwis/uv/?format=rdb&site_no=" + miEmbalse, function(data){
+    let datos = filtraDatos(data),
+        lat = siteDict[miEmbalse].lat,
+        lon = siteDict[miEmbalse].lon,
+        nombre = siteDict[miEmbalse].nombre,
+        desborde = parseFloat(siteDict[miEmbalse].desborde),
+        seguridad = parseFloat(siteDict[miEmbalse].seguridad),
+        observacion = parseFloat(siteDict[miEmbalse].observacion),
+        ajuste = parseFloat(siteDict[miEmbalse].ajuste),
+        control = parseFloat(siteDict[miEmbalse].control),
+        nivel = datos[1].pop(),
+        nivel_pend = datos[1], 
+        fecha = datos[0],
+        pendiente = tendencia(fecha, nivel_pend),
+        mensaje = "Sup..soy " + nombre + " <br> Mi nivel es " + parseFloat(nivel).toFixed(2) + " metros",
+        rect1, rect2, rect3, rect4, rect5,
+        icono, marcadorIcono, marcadorTend, color,
+        
+        //////////////////////////////////////////////////
+        // norm1 y nivel_1 son variables para nivel
+        // norm2 y nivel_2 son variables para desborde
+        // norm3 y nivel_3 son variables para seguridad
+        // norm4 y nivel_4 son variables para observacion
+        // norm5 y nivel_5 son variables para ajuste
+        // norm5 y nivel_6 son variables para ajuste
+        //////////////////////////////////////////////////
+        
+        norm1 = normalizacion(nivel,control,desborde),
+        norm2 = normalizacion(desborde,control,desborde),
+        norm3 = normalizacion(seguridad,control,desborde),
+        norm4 = normalizacion(observacion,control,desborde),
+        norm5 = normalizacion(ajuste,control,desborde),
+        norm6 = normalizacion(control,control,desborde),
+        nivel_1 = (0.09 - (norm1/9).toFixed(2)),
+        nivel_2 = (0.09 - (norm2/9).toFixed(2)),
+        nivel_3 = (0.09 - (norm3/9).toFixed(2)),
+        nivel_4 = (0.09 - (norm4/9).toFixed(2)),
+        nivel_5 = (0.09 - (norm5/9).toFixed(2)),
+        nivel_6 = (0.09 - (norm6/9).toFixed(2)),
+        largo = 0.04;
+
+    if (nivel_3 < 0){nivel_3=-nivel_3;}
+    if (nivel_4 < 0){nivel_4=-nivel_4;}
+    if (nivel_5 < 0){nivel_5=-nivel_5;}
+    if (nivel_6 < 0){nivel_6=-nivel_6;}
+
+    if (nivel >= seguridad){color = 'green';}
+    else if (nivel >= observacion && nivel < seguridad){color = 'blue'}
+    else if (nivel >= ajuste && nivel < observacion){color = 'yellow'}
+    else if (nivel <= control){color = 'darkorange'}
+
+    rect1 = L.rectangle([[lat-nivel_6.toFixed(2),lon-largo],[lat-nivel_1.toFixed(2),lon]],
+                            {color: color,
+                             colorOpacity:0.02,
+                             fillColor:color,
+                             fillOpacity:0.75,
+                             weight: 0.5}).addTo(mymap);
+    rect2 = L.rectangle([[lat-nivel_3.toFixed(2),lon],[lat-nivel_4.toFixed(2),lon-largo]],
+                              {color: "blue",
+                               colorOpacity:0.09,
+                               fillColor:"black",
+                               fillOpacity:0.02,
+                               weight: 1.5}).addTo(mymap);
+    rect3 = L.rectangle([[lat-nivel_4.toFixed(2),lon],[lat-nivel_5.toFixed(2),lon-largo]],
+                              {color: "yellow",
+                               colorOpacity:0.09,
+                               fillColor:"black",
+                               fillOpacity:0.02,
+                               weight: 1.5}).addTo(mymap);
+    rect4 = L.rectangle([[lat-nivel_5.toFixed(2),lon],[lat-nivel_1.toFixed(2),lon-largo]],
+                               {color: "darkorange",
+                                colorOpacity:0.09,
+                                fillColor:"black",
+                                fillOpacity:0.02,
+                                weight: 1.5}).addTo(mymap);
+    rect5 = L.rectangle([[lat-nivel_6.toFixed(2),lon],[lat-nivel_2.toFixed(2),lon-largo]],
+                              {color: "black",
+                               colorOpacity:0.09,
+                               fillColor:"black",
+                               fillOpacity:0.02,
+                               weight: 2}).addTo(mymap);
+
+    if(pendiente > 0)
+    {icono= 'https://cdn0.iconfinder.com/data/icons/flat-round-arrow-arrow-head/512/Green_Arrow_Top-512.png?raw=true';}
+    else if(pendiente == 0)
+    {icono= 'https://cdn0.iconfinder.com/data/icons/ui-essence/32/_26ui-512.png?raw=true';}
+    else if(pendiente < 0)
+    {icono= 'https://cdn0.iconfinder.com/data/icons/flat-round-arrow-arrow-head/512/Red_Arrow_Down-512.png?raw=true';}
+
+    marcadorIcono = L.icon({iconUrl: icono, iconSize: [25,25], iconAnchor: [15,30], className: 'icono'});
+    marcadorTend = L.marker([lat-nivel_2.toFixed(2)+0.017,lon-0.015], {icon: marcadorIcono}).addTo(mymap);
+    });
+    }
+
+    //////////////////////////////
+    // Funcion que imprime el mapa
+    //////////////////////////////
+
+    function procesaEmbalse(){
+    for(const [key,value] of Object.entries(siteDict))
+    {
+    createMarker(key);
+    }
+    }
+
+    createDictionary();
+    inicializaMapa();
+    setTimeout(procesaEmbalse,500);
+</script>
 </body>
 </html>
