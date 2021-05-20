@@ -33670,11 +33670,11 @@ a.u-link.u-text-hover-grey-90:hover {
 }
 
 .u-header .u-sheet-1 {
-  min-height: 120px;
+  min-height: 132px;
 }
 
 .u-header .u-menu-1 {
-  margin: 22px 0 0 auto;
+  margin: 34px 0 0 auto;
 }
 
 .u-header .u-nav-1 {
@@ -33691,7 +33691,7 @@ a.u-link.u-text-hover-grey-90:hover {
   height: 76px;
   background-image: url("images/LogoYadiel.png");
   background-position: 50% 50%;
-  margin: -36px auto 22px 24px;
+  margin: -36px auto 34px 24px;
 }
 @media (max-width: 1199px) {
   .u-header .u-menu-1 {
