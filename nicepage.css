@@ -33670,11 +33670,11 @@ a.u-link.u-text-hover-grey-90:hover {
 }
 
 .u-header .u-sheet-1 {
-  min-height: 140px;
+  min-height: 145px;
 }
 
 .u-header .u-menu-1 {
-  margin: 34px 0 0 auto;
+  margin: 35px 0 0 auto;
 }
 
 .u-header .u-nav-1 {
@@ -33691,31 +33691,55 @@ a.u-link.u-text-hover-grey-90:hover {
   height: 76px;
   background-image: url("images/LogoYadiel.png");
   background-position: 50% 50%;
-  margin: -36px auto 0 24px;
-}
-
-.u-header .u-btn-1 {
-  margin: -76px auto 60px 124px;
+  margin: -36px auto 35px 24px;
 }
 @media (max-width: 1199px) {
+  .u-header .u-sheet-1 {
+    min-height: 127px;
+  }
+
   .u-header .u-menu-1 {
     width: auto;
-    margin-right: 0;
+    margin-top: 26px;
+    margin-right: 25px;
   }
 
   .u-header .u-image-1 {
     width: 76px;
     height: 76px;
-  }
-
-  .u-header .u-btn-1 {
-    margin-top: -76px;
-    margin-left: 0;
+    margin-top: -56px;
+    margin-bottom: 6px;
   }
 }
+@media (max-width: 991px) {
+  .u-header .u-sheet-1 {
+    min-height: 139px;
+  }
 
+  .u-header .u-menu-1 {
+    margin-top: 32px;
+  }
 
+  .u-header .u-image-1 {
+    margin-top: -54px;
+    margin-bottom: 10px;
+    margin-left: 20px;
+  }
+}
+@media (max-width: 767px) {
+  .u-header .u-sheet-1 {
+    min-height: 140px;
+  }
 
+  .u-header .u-image-1 {
+    margin-left: 25px;
+  }
+}
+@media (max-width: 575px) {
+  .u-header .u-sheet-1 {
+    min-height: 139px;
+  }
+}
 .u-footer {
   background-image: none;
 }
